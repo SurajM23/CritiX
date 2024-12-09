@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/cream">
+
+    <!-- Movie Title Field -->
+    <EditText
+        android:id="@+id/movieTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Movie Title"
+        android:inputType="text"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon"
+        android:background="@drawable/input_bg"
+        android:padding="16dp"
+        android:layout_marginTop="20dp" />
+
+    <!-- Review Text Field -->
+    <EditText
+        android:id="@+id/reviewTextEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write your review"
+        android:inputType="textMultiLine"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon"
+        android:background="@drawable/input_bg"
+        android:gravity="top"
+        android:minHeight="100dp"
+        android:maxHeight="200dp"
+        android:padding="16dp"
+        android:layout_marginTop="20dp" />
+
+    <RatingBar
+        android:id="@+id/ratingSeekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1"
+        android:rating="1"
+        android:layout_gravity="center"
+        android:progressTint="@color/maroon"
+        android:secondaryProgressTint="@android:color/darker_gray"
+        android:backgroundTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/ratingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rating (1 to 5)"
+        android:textColor="@color/maroon"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
+
+    <!-- Tags Field -->
+    <TextView
+        android:id="@+id/tagsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tags"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon"
+        android:background="@drawable/input_bg"
+        android:padding="16dp"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true" />
+
+
+
+    <Button
+        android:id="@+id/uploadReviewButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload Review"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/maroon"
+        android:textSize="18sp"
+        android:layout_marginTop="30dp"
+        android:padding="16dp" />
+
+    <!-- Optional: Redirect to Home or Other Actions -->
+    <TextView
+        android:id="@+id/redirectHomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Home"
+        android:textSize="14sp"
+        android:textColor="@color/maroon"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true" />
+</LinearLayout>

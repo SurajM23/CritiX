@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/_4ssp"
+    android:layout_marginTop="@dimen/_8ssp"
+    android:layout_marginEnd="@dimen/_4ssp"
+    android:layout_marginBottom="@dimen/_4ssp"
+    app:cardBackgroundColor="@color/cream2"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input_bg"
+        android:orientation="vertical">
+
+        <!-- Movie Title -->
+        <TextView
+            android:id="@+id/tvMovieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/maroon"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Movie Title"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <!-- Movie Rating -->
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/maroon"
+            android:textSize="26sp" />
+
+        <!-- Review Text -->
+        <TextView
+            android:id="@+id/tvReviewText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_6ssp"
+            android:gravity="center"
+            android:paddingStart="@dimen/_8ssp"
+            android:paddingEnd="@dimen/_8ssp"
+            android:text="A wonderful review text goes here."
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <!-- Tags -->
+        <TextView
+            android:id="@+id/tvTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_4ssp"
+            android:gravity="center"
+            android:text="#SciFi #Thriller"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <!-- Footer Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/maroon"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Profile Section -->
+            <LinearLayout
+                android:id="@+id/llUser"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <!-- Profile Image -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_account2"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp" />
+
+                <!-- Username -->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:text="John Doe"
+                    android:textColor="@color/cream"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/tvShare"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3.5"
+                android:background="@android:color/transparent"
+                android:contentDescription="Share"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_share" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

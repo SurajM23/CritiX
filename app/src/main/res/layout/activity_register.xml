@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:src="@drawable/ic_account"
+        android:layout_width="@dimen/_80ssp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_40ssp"
+        android:layout_height="@dimen/_80ssp"/>
+
+    <!-- Register message in Hindi -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="10dp"
+        android:text="@string/register"
+        android:textColor="@color/maroon"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <!-- Username Field -->
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="username"
+        android:background="@drawable/input_bg"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        android:padding="16dp"
+        android:text="suraj1"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <!-- Email Field -->
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="emailAddress"
+        android:background="@drawable/input_bg"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="16dp"
+        android:text="suraj1@gmail.com"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <!-- Password Field -->
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="password"
+        android:background="@drawable/input_bg"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:text="suraj1"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <!-- Confirm Password Field -->
+    <EditText
+        android:id="@+id/confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="password"
+        android:background="@drawable/input_bg"
+        android:hint="@string/confirmPassword"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:text="suraj1"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/buttonColor"
+        android:padding="16dp"
+        android:text="@string/register"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <!-- Optional: Login redirect text -->
+    <TextView
+        android:id="@+id/login_redirect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/alreadyHaveAccountLogin"
+        android:textColor="@color/maroon"
+        android:textSize="14sp" />
+
+</LinearLayout>
