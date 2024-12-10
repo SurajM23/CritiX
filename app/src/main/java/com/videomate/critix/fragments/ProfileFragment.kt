@@ -1,5 +1,6 @@
 package com.videomate.critix.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.squareup.picasso.Picasso
 import com.videomate.critix.R
+import com.videomate.critix.activity.EditProfileActivity
+import com.videomate.critix.activity.ReviewActivity
+import com.videomate.critix.activity.UserActivity
 import com.videomate.critix.adapter.UserPostsAdapter
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.FragmentProfileBinding
 import com.videomate.critix.model.ReviewRequestData2
 import com.videomate.critix.model.UserPost
 import com.videomate.critix.repository.UserRepository
+import com.videomate.critix.utils.Constants
 import com.videomate.critix.utils.SharedPrefManager
 import com.videomate.critix.viewModel.UserViewModel
 import com.videomate.critix.viewModel.UserViewModelFactory
@@ -41,9 +47,8 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         init()
-        setupRecyclerView(  StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+        setupRecyclerView(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
         setTabSelected(binding.staggeredViewButton)
         setOnClick()
         loadUserData()
@@ -80,6 +85,9 @@ class ProfileFragment : Fragment() {
             setTabSelected(binding.staggeredViewButton)
             setTabUnselected(binding.linearViewButton)
         }
+        binding.txtEdit.setOnClickListener {
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+        }
     }
 
     private fun fetchUserData(userId: String, token: String) {
@@ -94,16 +102,20 @@ class ProfileFragment : Fragment() {
                 response.body()?.let { userResponse ->
                     val userDetails = userResponse.data.user
                     binding.usernameTextView.text = userDetails.username
-                    binding.bioTextView.text = if (userDetails.myConnections.isNotEmpty()) {
-                        "Hello, welcome to my profile!"
-                    } else {
-                        "Hello there!"
-                    }
+                    binding.bioTextView.text = userDetails.description
                     binding.myConnectionsCount.text =
                         userResponse.data.user.myConnections.size.toString()
                     binding.connectedToCount.text =
                         userResponse.data.user.connectedTo.size.toString()
                     binding.reviewCount.text = userResponse.data.user.reviews.size.toString()
+
+                    if (userDetails.profileImageUrl.isNotEmpty()) {
+                        Picasso.get()
+                            .load(userDetails.profileImageUrl)
+                            .placeholder(R.drawable.ic_account)
+                            .error(R.drawable.ic_account)
+                            .into(binding.profileImage)
+                    }else binding.profileImage.setImageResource(R.drawable.ic_account)
 
                 }
             } else {
@@ -114,12 +126,16 @@ class ProfileFragment : Fragment() {
                 ).show()
             }
         }
-
         userViewModel.userPostsResponse.observe(viewLifecycleOwner) { response ->
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
                     val posts = apiResponse.data.posts.map { post ->
-                        UserPost(title = post.movieTitle, review = post.reviewText)
+                        UserPost(
+                            title = post.movieTitle,
+                            review = post.reviewText,
+                            reviewId = post._id,
+                            userId = post.author._id
+                        )
                     }
                     updateUserPosts(posts)
                 }
@@ -141,6 +157,12 @@ class ProfileFragment : Fragment() {
 
     private fun setupRecyclerView(layoutManager: RecyclerView.LayoutManager) {
         userPostsAdapter = UserPostsAdapter(userPosts)
+        { user ->
+            val intent = Intent(requireContext(), ReviewActivity::class.java)
+            Constants.REVIEW_ID = user.reviewId
+            Constants.USER_ID = user.userId
+            startActivity(intent)
+        }
         binding.userPostsRecyclerView.apply {
             this.layoutManager = layoutManager
             adapter = userPostsAdapter
@@ -165,6 +187,11 @@ class ProfileFragment : Fragment() {
                 ContextCompat.getColor(requireContext(), R.color.maroon)
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadUserData()
     }
 
     override fun onDestroyView() {

@@ -1,5 +1,6 @@
 package com.videomate.critix.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.squareup.picasso.Picasso
 import com.videomate.critix.R
 import com.videomate.critix.adapter.UserPostsAdapter
 import com.videomate.critix.apiService.ApiServiceBuilder
@@ -91,6 +93,12 @@ class UserActivity : AppCompatActivity() {
 
     private fun setupRecyclerView(layoutManager: RecyclerView.LayoutManager) {
         userPostsAdapter = UserPostsAdapter(userPosts)
+        { user ->
+            val intent = Intent(this@UserActivity, ReviewActivity::class.java)
+            Constants.REVIEW_ID = user.reviewId
+            Constants.USER_ID = user.userId
+            startActivity(intent)
+        }
         binding.userPostsRecyclerView.apply {
             this.layoutManager = layoutManager
             adapter = userPostsAdapter
@@ -125,11 +133,19 @@ class UserActivity : AppCompatActivity() {
 
     private fun updateUserUI(userDetails: UserDetails) {
         binding.usernameTextView.text = userDetails.username
-        binding.bioTextView.text =
-            if (userDetails.myConnections.isNotEmpty()) "Hello, welcome to my profile!" else "Hello there!"
+        binding.bioTextView.text = userDetails.description
         binding.myConnectionsCount.text = userDetails.myConnections.size.toString()
         binding.connectedToCount.text = userDetails.connectedTo.size.toString()
         binding.reviewCount.text = userDetails.reviews.size.toString()
+
+        if (userDetails.profileImageUrl.isNotEmpty()) {
+            Picasso.get()
+                .load(userDetails.profileImageUrl)
+                .placeholder(R.drawable.ic_account)
+                .error(R.drawable.ic_account)
+                .into(binding.profileImage)
+        }else binding.profileImage.setImageResource(R.drawable.ic_account)
+
     }
 
     private fun updateConnectionStatus(userDetails: UserDetails) {
@@ -143,7 +159,7 @@ class UserActivity : AppCompatActivity() {
 
     private fun updateUserPosts(posts: List<Post>) {
         userPosts.clear()
-        userPosts.addAll(posts.map { UserPost(title = it.movieTitle, review = it.reviewText) })
+        userPosts.addAll(posts.map { UserPost(title = it.movieTitle, review = it.reviewText, reviewId = it._id, userId = it.author._id) })
         userPostsAdapter.notifyDataSetChanged()
     }
 

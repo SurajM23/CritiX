@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-    // AndroidX Core and Material
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,17 +50,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.swiperefreshlayout)
 
-    // Retrofit for networking
     implementation(libs.retrofit.v290)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    // Room Database
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    // Other Libraries
     implementation(libs.ssp.android)
     implementation(libs.picasso)
     implementation(libs.circleimageview)
@@ -69,14 +65,10 @@ dependencies {
     implementation(libs.calligraphy3)
     implementation(libs.viewpump)
 
-    // Hilt for Dependency Injection
-
-    // Testing Libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
+    implementation(libs.androidx.work.runtime.ktx)
 }
 
 kapt {

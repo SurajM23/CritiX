@@ -3,10 +3,16 @@ package com.videomate.critix.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import com.videomate.critix.R
 import com.videomate.critix.databinding.ItemFeedBinding
 import com.videomate.critix.model.Review2
+import com.videomate.critix.utils.Constants
 
-class ReviewsAdapter(private val onReviewClick: (String) -> Unit ,  private val onAuthorClick : (String) -> Unit) :
+class ReviewsAdapter(
+    private val onReviewClick: (String) -> Unit,
+    private val onAuthorClick: (String) -> Unit
+) :
     RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
 
     private var reviews = mutableListOf<Review2>()
@@ -23,8 +29,21 @@ class ReviewsAdapter(private val onReviewClick: (String) -> Unit ,  private val 
                 tvRating.text = ratingStars
                 tvTags.text = review.tags.joinToString(", ") { "#$it" }
 
+                if (!review.author.profileImageUrl.isNullOrEmpty()) {
+                    val imageUrl = review.author.profileImageUrl.takeIf { it.isNotEmpty() }
+                        ?.replace("undefined/", "")
+                    Picasso.get()
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_account)
+                        .error(R.drawable.ic_account)
+                        .into(profileImage)
+                } else {
+                    profileImage.setImageResource(R.drawable.ic_account)
+                }
+
                 llUser.setOnClickListener {
-                    onAuthorClick(review.author._id)
+                    Constants.USER_ID = review.author._id
+                    onAuthorClick(Constants.USER_ID)
                 }
             }
         }
@@ -40,7 +59,6 @@ class ReviewsAdapter(private val onReviewClick: (String) -> Unit ,  private val 
         holder.itemView.setOnClickListener {
             onReviewClick(reviews[position]._id) // Pass review ID to the callback
         }
-
     }
 
     override fun getItemCount(): Int = reviews.size

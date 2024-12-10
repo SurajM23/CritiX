@@ -24,6 +24,7 @@ roomRuntime = "2.6.1"
 sspAndroid = "1.1.0"
 swiperefreshlayout = "1.2.0-alpha01"
 viewpump = "2.0.3"
+workRuntimeKtx = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 calligraphy3 = { module = "io.github.inflationx:calligraphy3", version.ref = "calligraphy3" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }

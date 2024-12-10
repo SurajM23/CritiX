@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.videomate.critix.databinding.ItemReviewBinding
 import com.videomate.critix.model.Review2
+import com.videomate.critix.utils.Constants
 
 class ReviewAdapter2(
     private val reviews: List<Review2>,
@@ -21,6 +22,7 @@ class ReviewAdapter2(
         val review = reviews[position]
         holder.bind(review)
         holder.itemView.setOnClickListener {
+            Constants.USER_ID = review.author._id
             onReviewClick(review._id) // Pass review ID to the callback
         }
     }

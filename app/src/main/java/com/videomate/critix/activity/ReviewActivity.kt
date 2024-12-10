@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import com.squareup.picasso.Picasso
 import com.videomate.critix.R
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.ActivityReviewBinding
@@ -32,19 +33,15 @@ class ReviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         reviewId = Constants.REVIEW_ID
         userId = SharedPrefManager.getUserId(this@ReviewActivity).toString()
         initView()
         observeViewModel()
-
         if (reviewId.isNotEmpty()) {
-            Log.e("ReviewActivity", "Review ID: $reviewId")
             viewModel.fetchReviewById(reviewId,userId)
         } else {
             Toast.makeText(this, "Review ID is missing", Toast.LENGTH_SHORT).show()
         }
-
         binding.likeSection.setOnClickListener {
             handleLikeAction()
         }
@@ -63,6 +60,8 @@ class ReviewActivity : AppCompatActivity() {
             if (response != null) {
                 if (response.isSuccessful) {
                     val review = response.body()?.data
+                    Log.e("reviewNameUser","name ${Constants.REVIEW_ID}")
+                    Log.e("reviewNameUser","name ${review?.author}")
                     if (review != null) {
                         displayReviewDetails(review)
                     } else {
@@ -108,10 +107,16 @@ class ReviewActivity : AppCompatActivity() {
             ivLikeIcon.setImageResource(
                 if (isLiked) R.drawable.ic_like_on else R.drawable.ic_like_off
             )
+            if (review.author.profileImageUrl?.isNotEmpty() == true) {
+                Picasso.get()
+                    .load(review.author.profileImageUrl)
+                    .placeholder(R.drawable.ic_account)
+                    .error(R.drawable.ic_account)
+                    .into(binding.profileImage)
+            }else binding.profileImage.setImageResource(R.drawable.ic_account)
 
 
             binding.llUser.setOnClickListener {
-                Constants.USER_ID = review.author.id
                 val intent = Intent(
                     this@ReviewActivity,
                     UserActivity::class.java)

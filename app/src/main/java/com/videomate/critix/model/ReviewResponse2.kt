@@ -28,5 +28,6 @@ data class Review2(
 
 data class Author(
     val _id: String,
-    val username: String
+    val username: String,
+    val profileImageUrl: String?
 )

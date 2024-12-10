@@ -15,13 +15,22 @@ import com.videomate.critix.model.ReviewRequestData2
 import com.videomate.critix.model.ReviewResponse
 import com.videomate.critix.model.ReviewResponse2
 import com.videomate.critix.model.SingleReviewResponse
+import com.videomate.critix.model.UpdateProfileImageResponse
+import com.videomate.critix.model.UpdateProfileResponse
+import com.videomate.critix.model.UpdateUserRequest
+import com.videomate.critix.model.UpdateUserResponse
 import com.videomate.critix.model.UserResponse
 import com.videomate.critix.model.UserResponse2
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -87,5 +96,19 @@ interface ApiService {
 
     @POST("review/like")
     suspend fun likeReview(@Body likeReviewRequest: LikeReviewRequest): Response<LikeReviewResponse>
+
+    @PUT("users/updateuserdata")
+    suspend fun updateUserDetails(
+        @Header("Authorization") token: String,
+        @Body updateUserRequest: UpdateUserRequest
+    ): Response<UpdateUserResponse>
+
+    @Multipart
+    @PUT("users/updateprofileimage")
+    suspend fun updateProfileImage(
+        @Header("Authorization") token: String,          // Token for authentication
+        @Part profileImage: MultipartBody.Part          // Profile image file as part
+    ): Response<UpdateProfileImageResponse>
+
 
 }

@@ -131,17 +131,15 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
 
         reviewsAdapter = ReviewsAdapter(
             onReviewClick = { reviewId ->
-                // Handle review click
                 val intent = Intent(requireContext(), ReviewActivity::class.java)
                 Constants.REVIEW_ID = reviewId
                 startActivity(intent)
             },
             onAuthorClick = { authorId ->
-                // Handle author click
                 val intent = Intent(
                     requireContext(),
                     UserActivity::class.java
-                ) // Hypothetical activity for author profiles
+                )
                 Constants.USER_ID = authorId
                 startActivity(intent)
             }
@@ -178,8 +176,6 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
             if (response != null) {
                 if (response.success) {
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_SHORT).show()
-
-                    // Update the connection status in the adapter
                     userAdapter.updateConnectionStatus(
                         userId = Constants.USER_ID,
                         isConnected = true
@@ -208,6 +204,4 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                 userViewModel.toggleConnection(token, it)
             }
     }
-
-
 }

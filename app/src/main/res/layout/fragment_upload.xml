@@ -90,16 +90,4 @@
         android:layout_marginTop="30dp"
         android:padding="16dp" />
 
-    <!-- Optional: Redirect to Home or Other Actions -->
-    <TextView
-        android:id="@+id/redirectHomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back to Home"
-        android:textSize="14sp"
-        android:textColor="@color/maroon"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:focusable="true" />
 </LinearLayout>

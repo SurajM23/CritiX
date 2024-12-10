@@ -15,9 +15,18 @@ import com.videomate.critix.model.ReviewRequestData2
 import com.videomate.critix.model.ReviewResponse
 import com.videomate.critix.model.ReviewResponse2
 import com.videomate.critix.model.SingleReviewResponse
+import com.videomate.critix.model.UpdateProfileImageResponse
+import com.videomate.critix.model.UpdateProfileResponse
+import com.videomate.critix.model.UpdateUserRequest
+import com.videomate.critix.model.UpdateUserResponse
 import com.videomate.critix.model.UserResponse
 import com.videomate.critix.model.UserResponse2
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
+import java.io.File
 
 class UserRepository(private val apiService: ApiService) {
 
@@ -67,5 +76,17 @@ class UserRepository(private val apiService: ApiService) {
     suspend fun likeReview(likeReviewRequest: LikeReviewRequest): Response<LikeReviewResponse> {
         return apiService.likeReview(likeReviewRequest)
     }
+
+    suspend fun updateUserDetails(token: String,updateUserRequest: UpdateUserRequest): Response<UpdateUserResponse> {
+        return apiService.updateUserDetails("Bearer $token",updateUserRequest)
+    }
+
+
+    suspend fun updateProfileImage(token: String, imageFile: File): Response<UpdateProfileImageResponse> {
+        val requestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val multipartBody = MultipartBody.Part.createFormData("profileImage", imageFile.name, requestBody)
+        return apiService.updateProfileImage("Bearer $token", multipartBody)
+    }
+
 
 }

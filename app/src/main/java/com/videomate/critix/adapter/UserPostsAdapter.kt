@@ -9,7 +9,7 @@ import com.videomate.critix.R
 import com.videomate.critix.model.UserPost
 
 class UserPostsAdapter(
-    private val posts: List<UserPost>
+    private val posts: List<UserPost>,private val onReviewClick: (UserPost) -> Unit
 ) : RecyclerView.Adapter<UserPostsAdapter.UserPostViewHolder>() {
 
     class UserPostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -27,6 +27,9 @@ class UserPostsAdapter(
         val post = posts[position]
         holder.title.text = post.title
         holder.review.text = post.review
+        holder.itemView.setOnClickListener{
+            onReviewClick(post)
+        }
     }
 
     override fun getItemCount(): Int = posts.size

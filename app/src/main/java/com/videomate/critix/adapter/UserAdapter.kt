@@ -48,8 +48,10 @@ class UserAdapter(private val itemClickListener: OnItemClickListener) :
         fun bind(user: User) {
             usernameTextView.text = user.username
             if (!user.profileImageUrl.isNullOrEmpty()) {
+                val imageUrl = user.profileImageUrl.takeIf { it.isNotEmpty() }
+                    ?.replace("undefined/", "")
                 Picasso.get()
-                    .load(user.profileImageUrl)
+                    .load(imageUrl)
                     .placeholder(R.drawable.ic_account)
                     .error(R.drawable.ic_account)
                     .into(profileImageView)
