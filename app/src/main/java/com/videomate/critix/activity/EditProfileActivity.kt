@@ -153,18 +153,24 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+
     private fun updateUserUI(userDetails: UserDetails) {
         binding.edtUsername.setText(userDetails.username)
         binding.edtEmail.setText(userDetails.email)
         binding.edtDescription.setText(userDetails.description)
-        if (userDetails.profileImageUrl.isNotEmpty()) {
+
+        // Safe check for null and empty profileImageUrl
+        if (!userDetails.profileImageUrl.isNullOrEmpty()) {
             Picasso.get()
                 .load(userDetails.profileImageUrl)
                 .placeholder(R.drawable.ic_account)
                 .error(R.drawable.ic_account)
                 .into(binding.imgProfile)
-        } else binding.imgProfile.setImageResource(R.drawable.ic_account)
+        } else {
+            binding.imgProfile.setImageResource(R.drawable.ic_account)
+        }
     }
+
 
     private fun isReadStoragePermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

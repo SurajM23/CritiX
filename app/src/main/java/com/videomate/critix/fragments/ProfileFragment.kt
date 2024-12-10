@@ -96,27 +96,34 @@ class ProfileFragment : Fragment() {
         userViewModel.fetchUserPosts(token, ReviewRequestData2(userId, 1, 10))
     }
 
+
     private fun observeUserData() {
         userViewModel.userData.observe(viewLifecycleOwner) { response ->
             if (response.isSuccessful) {
                 response.body()?.let { userResponse ->
                     val userDetails = userResponse.data.user
-                    binding.usernameTextView.text = userDetails.username
-                    binding.bioTextView.text = userDetails.description
-                    binding.myConnectionsCount.text =
-                        userResponse.data.user.myConnections.size.toString()
-                    binding.connectedToCount.text =
-                        userResponse.data.user.connectedTo.size.toString()
-                    binding.reviewCount.text = userResponse.data.user.reviews.size.toString()
 
-                    if (userDetails.profileImageUrl.isNotEmpty()) {
-                        Picasso.get()
-                            .load(userDetails.profileImageUrl)
-                            .placeholder(R.drawable.ic_account)
-                            .error(R.drawable.ic_account)
-                            .into(binding.profileImage)
-                    }else binding.profileImage.setImageResource(R.drawable.ic_account)
+                    // Use safe call to ensure userDetails is not null
+                    userDetails?.let { details ->
+                        binding.usernameTextView.text = details.username ?: "Username not available"
+                        binding.bioTextView.text = details.description ?: "No description available"
+                        binding.myConnectionsCount.text =
+                            userResponse.data.user.myConnections?.size?.toString() ?: "0"
+                        binding.connectedToCount.text =
+                            userResponse.data.user.connectedTo?.size?.toString() ?: "0"
+                        binding.reviewCount.text = userResponse.data.user.reviews?.size?.toString() ?: "0"
 
+                        // Safe check for profileImageUrl being null
+                        if (!details.profileImageUrl.isNullOrEmpty()) {
+                            Picasso.get()
+                                .load(details.profileImageUrl)
+                                .placeholder(R.drawable.ic_account)
+                                .error(R.drawable.ic_account)
+                                .into(binding.profileImage)
+                        } else {
+                            binding.profileImage.setImageResource(R.drawable.ic_account)
+                        }
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -126,18 +133,21 @@ class ProfileFragment : Fragment() {
                 ).show()
             }
         }
+
         userViewModel.userPostsResponse.observe(viewLifecycleOwner) { response ->
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
-                    val posts = apiResponse.data.posts.map { post ->
+                    val posts = apiResponse.data.posts?.map { post ->
                         UserPost(
-                            title = post.movieTitle,
-                            review = post.reviewText,
+                            title = post.movieTitle ?: "Untitled",
+                            review = post.reviewText ?: "No review available",
                             reviewId = post._id,
                             userId = post.author._id
                         )
                     }
-                    updateUserPosts(posts)
+                    if (posts != null) {
+                        updateUserPosts(posts)
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -148,6 +158,8 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun updateUserPosts(posts: List<UserPost>) {
         userPosts.clear()

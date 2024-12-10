@@ -39,6 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Review Text"
+                android:maxLines="12"
+                android:ellipsize="end"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:textColor="@color/black" />
 

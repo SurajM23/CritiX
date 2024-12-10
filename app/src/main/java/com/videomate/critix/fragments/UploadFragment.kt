@@ -2,6 +2,7 @@ package com.videomate.critix.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -56,12 +57,10 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         _binding = FragmentUploadBinding.bind(view)
         init()
         setObserver()
-        // Set up the tags click listener
         binding.tagsEditText.setOnClickListener {
             showTagsDialog()
         }
 
-        // Set up the upload button action
         binding.uploadReviewButton.setOnClickListener {
             if (binding.movieTitleEditText.text.isNotEmpty() && binding.reviewTextEditText.text.isNotEmpty()) {
                 SharedPrefManager.getToken(requireContext())?.let { it1 ->
@@ -91,7 +90,8 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
 
     private fun setObserver() {
         userViewModel.reviewResponse.observe(viewLifecycleOwner) { response ->
-            if (response.isSuccessful) {
+            Log.e("uploadingreview","respnse ${response.raw()}")
+            if (response.code() == 200) {
                 binding.movieTitleEditText.setText("")
                 binding.tagsEditText.text = ""
                 binding.ratingTextView.text = ""

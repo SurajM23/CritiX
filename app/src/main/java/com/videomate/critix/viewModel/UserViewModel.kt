@@ -21,14 +21,12 @@ import com.videomate.critix.model.ReviewResponse
 import com.videomate.critix.model.ReviewResponse2
 import com.videomate.critix.model.SingleReviewResponse
 import com.videomate.critix.model.UpdateProfileImageResponse
-import com.videomate.critix.model.UpdateProfileResponse
 import com.videomate.critix.model.UpdateUserRequest
 import com.videomate.critix.model.UpdateUserResponse
 import com.videomate.critix.model.UserResponse
 import com.videomate.critix.model.UserResponse2
 import com.videomate.critix.repository.UserRepository
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 import retrofit2.Response
 import java.io.File
 
