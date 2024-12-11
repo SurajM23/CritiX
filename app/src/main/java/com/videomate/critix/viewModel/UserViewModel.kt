@@ -5,26 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.videomate.critix.model.ApiResponse
-import com.videomate.critix.model.ConnectRequestData
-import com.videomate.critix.model.ConnectionResponse
-import com.videomate.critix.model.LikeReviewRequest
-import com.videomate.critix.model.LikeReviewResponse
-import com.videomate.critix.model.LoginRequest
-import com.videomate.critix.model.LoginResponse
-import com.videomate.critix.model.RegisterRequest
-import com.videomate.critix.model.RegisterResponse
-import com.videomate.critix.model.ReviewRequest
-import com.videomate.critix.model.ReviewRequestData
-import com.videomate.critix.model.ReviewRequestData2
-import com.videomate.critix.model.ReviewResponse
-import com.videomate.critix.model.ReviewResponse2
-import com.videomate.critix.model.SingleReviewResponse
-import com.videomate.critix.model.UpdateProfileImageResponse
-import com.videomate.critix.model.UpdateUserRequest
-import com.videomate.critix.model.UpdateUserResponse
-import com.videomate.critix.model.UserResponse
-import com.videomate.critix.model.UserResponse2
+import com.videomate.critix.model.*
 import com.videomate.critix.repository.UserRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -39,11 +20,15 @@ class UserViewModel(
 
     fun registerUser(request: RegisterRequest) {
         viewModelScope.launch {
-            val response = repository.registerUser(request)
-            _registerResponse.postValue(response)
+            try {
+                val response = repository.registerUser(request)
+                _registerResponse.postValue(response)
+            } catch (e: Exception) {
+                Log.e("RegisterUser", "Error: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
-
 
     private val _loginResponse = MutableLiveData<Response<LoginResponse>>()
     val loginResponse: LiveData<Response<LoginResponse>> get() = _loginResponse
@@ -53,21 +38,25 @@ class UserViewModel(
                 val response = repository.loginUser(request)
                 _loginResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("LoginUser", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
 
-
     private val _userData = MutableLiveData<Response<UserResponse>>()
     val userData: LiveData<Response<UserResponse>> get() = _userData
     fun fetchUserData(userId: String, token: String) {
         viewModelScope.launch {
-            val response = repository.getUserData(userId, token)
-            _userData.postValue(response)
+            try {
+                val response = repository.getUserData(userId, token)
+                _userData.postValue(response)
+            } catch (e: Exception) {
+                Log.e("FetchUserData", "Error: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
-
 
     private val _reviewResponse = MutableLiveData<Response<ReviewResponse>>()
     val reviewResponse: LiveData<Response<ReviewResponse>> get() = _reviewResponse
@@ -77,11 +66,11 @@ class UserViewModel(
                 val response = repository.createReview(token, reviewRequest)
                 _reviewResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("CreateReview", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
 
     private val _reviewsResponse = MutableLiveData<Response<ReviewResponse2>>()
     val reviewsResponse: LiveData<Response<ReviewResponse2>> get() = _reviewsResponse
@@ -91,25 +80,25 @@ class UserViewModel(
                 val response = repository.getReviews(request)
                 _reviewsResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("FetchReviews", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
 
     private val _userPostsResponse = MutableLiveData<Response<ApiResponse>>()
     val userPostsResponse: LiveData<Response<ApiResponse>> get() = _userPostsResponse
-    fun fetchUserPosts(token: String,request: ReviewRequestData2) {
+    fun fetchUserPosts(token: String, request: ReviewRequestData2) {
         viewModelScope.launch {
             try {
-                val response = repository.getUserPosts(token,request)
+                val response = repository.getUserPosts(token, request)
                 _userPostsResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("FetchUserPosts", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
 
     private val _usersResponse = MutableLiveData<Response<UserResponse2>>()
     val usersResponse: LiveData<Response<UserResponse2>> get() = _usersResponse
@@ -119,12 +108,11 @@ class UserViewModel(
                 val response = repository.getAllUsers()
                 _usersResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("FetchUsers", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
-
 
     private val _toggleConnectionResponse = MutableLiveData<ConnectionResponse?>()
     val toggleConnectionResponse: LiveData<ConnectionResponse?> get() = _toggleConnectionResponse
@@ -135,11 +123,12 @@ class UserViewModel(
                 if (response.isSuccessful) {
                     _toggleConnectionResponse.postValue(response.body())
                 } else {
-                    _toggleConnectionResponse.postValue(null) // Handle API error
+                    _toggleConnectionResponse.postValue(null)
                 }
             } catch (e: Exception) {
+                Log.e("ToggleConnection", "Error: ${e.message}")
                 e.printStackTrace()
-                _toggleConnectionResponse.postValue(null) // Handle failure
+                _toggleConnectionResponse.postValue(null)
             }
         }
     }
@@ -153,15 +142,15 @@ class UserViewModel(
                 if (response.isSuccessful) {
                     _userFeedResponse.postValue(response)
                 } else {
-                    _userFeedResponse.postValue(null) // Handle errors
+                    _userFeedResponse.postValue(null)
                 }
             } catch (e: Exception) {
+                Log.e("FetchUserFeed", "Error: ${e.message}")
                 e.printStackTrace()
-                _userFeedResponse.postValue(null) // Handle failures
+                _userFeedResponse.postValue(null)
             }
         }
     }
-
 
     private val _singleReviewResponse = MutableLiveData<Response<SingleReviewResponse>>()
     val singleReviewResponse: LiveData<Response<SingleReviewResponse>> get() = _singleReviewResponse
@@ -172,6 +161,7 @@ class UserViewModel(
                 val response = repository.getReviewById(reviewId, userId)
                 _singleReviewResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("FetchReviewById", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -186,13 +176,11 @@ class UserViewModel(
                 val response = repository.likeReview(likeReviewRequest)
                 _likeReviewResponse.postValue(response)
             } catch (e: Exception) {
+                Log.e("LikeReview", "Error: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
-
-
 
     private val _updateUserResponse = MutableLiveData<Response<UpdateUserResponse>>()
     val updateUserResponse: LiveData<Response<UpdateUserResponse>> get() = _updateUserResponse
@@ -200,12 +188,10 @@ class UserViewModel(
     fun updateUserDetails(token: String, updateUserRequest: UpdateUserRequest) {
         viewModelScope.launch {
             try {
-                // Log before making the API call
                 Log.d("UpdateUserDetails", "Making API call to update user details...")
 
                 val response = repository.updateUserDetails(token, updateUserRequest)
 
-                // Log response status and body
                 if (response.isSuccessful) {
                     Log.d("UpdateUserDetails", "Response successful: ${response.raw()}")
                     _updateUserResponse.postValue(response)
@@ -214,14 +200,11 @@ class UserViewModel(
                 }
 
             } catch (e: Exception) {
-                // Log any exceptions that occur during the API call
                 Log.e("UpdateUserDetails", "Error during API call: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
-
-
 
     private val _updateProfileImageResponse = MutableLiveData<UpdateProfileImageResponse?>()
     val updateProfileImageResponse: LiveData<UpdateProfileImageResponse?> get() = _updateProfileImageResponse
@@ -233,16 +216,13 @@ class UserViewModel(
                 if (response.isSuccessful) {
                     _updateProfileImageResponse.postValue(response.body())
                 } else {
-                    _updateProfileImageResponse.postValue(null) // Handle API error
+                    _updateProfileImageResponse.postValue(null)
                 }
             } catch (e: Exception) {
+                Log.e("UpdateProfileImage", "Error: ${e.message}")
                 e.printStackTrace()
-                _updateProfileImageResponse.postValue(null) // Handle failure
+                _updateProfileImageResponse.postValue(null)
             }
         }
     }
-
-
-
-
 }

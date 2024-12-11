@@ -71,7 +71,6 @@ class UserAdapter(private val itemClickListener: OnItemClickListener) :
 
             }
 
-            // Handle button clicks
             connectButton.setOnClickListener {
                 connectButton.setBackgroundColor(itemView.context.getColor(R.color.cream))
                 connectButton.setTextColor(itemView.context.getColor(R.color.black))
@@ -79,7 +78,6 @@ class UserAdapter(private val itemClickListener: OnItemClickListener) :
                 itemClickListener.onButtonClick(user)
             }
 
-            // Handle item click
             itemView.setOnClickListener {
                 itemClickListener.onItemClick(user)
             }
@@ -88,7 +86,6 @@ class UserAdapter(private val itemClickListener: OnItemClickListener) :
         }
     }
 
-    // Define the interface
     interface OnItemClickListener {
         fun onItemClick(user: User)
         fun onButtonClick(user: User)

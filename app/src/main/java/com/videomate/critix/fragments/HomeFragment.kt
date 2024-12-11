@@ -24,6 +24,8 @@ import com.videomate.critix.utils.Constants
 import com.videomate.critix.utils.SharedPrefManager
 import com.videomate.critix.viewModel.UserViewModel
 import com.videomate.critix.viewModel.UserViewModelFactory
+import kotlinx.coroutines.*
+import java.net.SocketTimeoutException
 
 class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
 
@@ -46,13 +48,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         loadToken()
         setupViewModel()
-        getUserData()
-        userAdapter = UserAdapter(this)
-        binding.rvUsers.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = userAdapter
-        }
-
+        setupRecyclerViews()
         observeUsers()
         observeConnectionResponse()
     }
@@ -63,65 +59,51 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     }
 
     private fun getUserData() {
-        if (userId.isNotEmpty() && token.isNotEmpty()) {
             observeUserData()
-            userViewModel.fetchUserData(userId, token)
-        } else {
-            Toast.makeText(requireContext(), "User not logged in!", Toast.LENGTH_SHORT).show()
+            safeApiCall {
+                userViewModel.fetchUserData(userId, token)
+            }
         }
-    }
 
     private fun observeUserData() {
         userViewModel.userData.observe(viewLifecycleOwner) { response ->
             if (response.isSuccessful) {
                 response.body()?.let { userResponse ->
                     if (userResponse.data.user.connectedTo.isEmpty()) {
-                        userViewModel.fetchUsers()
+                        safeApiCall {
+                            userViewModel.fetchUsers()
+                        }
                         binding.rvUsers.visibility = View.VISIBLE
                         binding.rvFeed.visibility = View.GONE
                     } else {
                         binding.rvUsers.visibility = View.GONE
                         binding.rvFeed.visibility = View.VISIBLE
-                        userViewModel.fetchUserFeed(token, userId, 1, 20)
+                        safeApiCall {
+                            userViewModel.fetchUserFeed(token, userId, 1, 20)
+                        }
                         observeFeedData()
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Error: Unable to load profile data",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showError("Unable to load profile data")
             }
         }
-
     }
-
 
     private fun observeFeedData() {
         userViewModel.userFeedResponse.observe(viewLifecycleOwner) { response ->
-            Log.e("userFeed", "feed size: one")
             if (response != null) {
-                Log.e("userFeed", "feed size: two")
                 if (response.isSuccessful) {
-                    Log.e("userFeed", "feed size: three")
                     response.body()?.let { userResponse ->
-                        Log.e("userFeed", "feed size: four")
                         val reviews = userResponse.data.reviews
-                        Log.e("userFeed", "feed size: ${reviews.size}")
                         reviewsAdapter.updateData(reviews)
                     }
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: Unable to load feed data",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showError("Unable to load feed data")
                 }
             }
         }
     }
-
 
     private fun setupViewModel() {
         val apiService = ApiServiceBuilder.createApiService()
@@ -145,10 +127,17 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
             }
         )
 
-
         binding.rvFeed.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = reviewsAdapter
+        }
+    }
+
+    private fun setupRecyclerViews() {
+        userAdapter = UserAdapter(this)
+        binding.rvUsers.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = userAdapter
         }
     }
 
@@ -166,7 +155,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                     userAdapter.setUsers(users)
                 }
             } else {
-                Toast.makeText(requireContext(), "Failed to load users", Toast.LENGTH_SHORT).show()
+                showError("Failed to load users")
             }
         }
     }
@@ -184,11 +173,26 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to toggle connection. Try again.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showError("Failed to toggle connection. Try again.")
+            }
+        }
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun safeApiCall(apiCall: suspend () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    apiCall()
+                }
+            } catch (e: SocketTimeoutException) {
+                showError("The server is taking too long to respond. Please try again later.")
+            } catch (e: Exception) {
+                showError("An unexpected error occurred. Please try again later.")
+                Log.e("API_ERROR", "Error: ${e.message}")
             }
         }
     }
@@ -198,10 +202,17 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
         startActivity(Intent(requireContext(), UserActivity::class.java))
     }
 
+    override fun onResume() {
+        super.onResume()
+        getUserData()
+    }
+
     override fun onButtonClick(user: User) {
         SharedPrefManager.getUserId(requireContext())
             ?.let { ConnectRequestData(user.id) }?.let {
-                userViewModel.toggleConnection(token, it)
+                safeApiCall {
+                    userViewModel.toggleConnection(token, it)
+                }
             }
     }
 }

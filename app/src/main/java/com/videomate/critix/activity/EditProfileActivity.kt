@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +20,7 @@ import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.model.UpdateUserRequest
 import com.videomate.critix.model.UserDetails
 import com.videomate.critix.repository.UserRepository
+import com.videomate.critix.utils.GlobelMethods
 import com.videomate.critix.utils.SharedPrefManager
 import com.videomate.critix.viewModel.UserViewModel
 import com.videomate.critix.viewModel.UserViewModelFactory
@@ -33,14 +33,15 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var userViewModel: UserViewModel
     private var selectedImageUri: Uri? = null
-    private val imagePickerResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                selectedImageUri = it
-                Picasso.get().load(uri)
-                    .into(binding.imgProfile) // Display selected image using Picasso
-            }
+    private val imagePickerResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            selectedImageUri = uri
+            Picasso.get().load(uri).into(binding.imgProfile)
+            Toast.makeText(this, "Image selected: $uri", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Failed to pick an image", Toast.LENGTH_SHORT).show()
         }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +50,9 @@ class EditProfileActivity : AppCompatActivity() {
         initView()
         setOnClick()
         setObserver()
-        if (!isReadStoragePermissionGranted()) {
-            requestReadStoragePermission()
-        }
-        SharedPrefManager.getUserId(this)
-            ?.let { SharedPrefManager.getToken(this)?.let { it1 -> fetchUserData(it, it1) } }
     }
+
+
 
     private fun setObserver() {
         userViewModel.updateProfileImageResponse.observe(this) { response ->
@@ -80,7 +78,7 @@ class EditProfileActivity : AppCompatActivity() {
             val email = binding.edtEmail.text.toString()
             val description = binding.edtDescription.text.toString()
             val token = SharedPrefManager.getToken(this) ?: ""
-            if (isValidEmail(email)) {
+            if (GlobelMethods().isValidEmail(email)) {
                 userViewModel.updateUserDetails(
                     token,
                     UpdateUserRequest(username, email, description)
@@ -105,6 +103,8 @@ class EditProfileActivity : AppCompatActivity() {
         val userRepository = UserRepository(apiService)
         val factory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+        SharedPrefManager.getUserId(this)
+            ?.let { SharedPrefManager.getToken(this)?.let { it1 -> fetchUserData(it, it1) } }
     }
 
     private fun getFileFromUri(context: Context, uri: Uri): File? {
@@ -142,10 +142,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         userViewModel.updateUserResponse.observe(this) { responce ->
-            Log.e("updateUserResponse", "respomse ${responce.code()}")
-            Log.e("updateUserResponse", "respomse ${responce.raw()}")
-            Log.e("updateUserResponse", "respomse ${responce.message()}")
-            Log.e("updateUserResponse", "respomse ${responce.errorBody()}")
             if (responce.code() == 200) {
                 Toast.makeText(this@EditProfileActivity, responce.message(), Toast.LENGTH_SHORT)
                     .show()
@@ -155,11 +151,10 @@ class EditProfileActivity : AppCompatActivity() {
 
 
     private fun updateUserUI(userDetails: UserDetails) {
-        binding.edtUsername.setText(userDetails.username)
-        binding.edtEmail.setText(userDetails.email)
-        binding.edtDescription.setText(userDetails.description)
+        binding.edtUsername.setText(userDetails.username ?: "")
+        binding.edtEmail.setText(userDetails.email ?: "")
+        binding.edtDescription.setText(userDetails.description ?: "")
 
-        // Safe check for null and empty profileImageUrl
         if (!userDetails.profileImageUrl.isNullOrEmpty()) {
             Picasso.get()
                 .load(userDetails.profileImageUrl)
@@ -171,6 +166,25 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (!isGranted) {
+                Toast.makeText(this, "Permission denied. Cannot access images.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+    override fun onResume() {
+        super.onResume()
+        checkImagePermission()
+    }
+
+    private fun checkImagePermission() {
+        if (!isReadStoragePermissionGranted()) {
+            requestReadStoragePermission()
+        }
+    }
 
     private fun isReadStoragePermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -202,19 +216,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         requestPermissionLauncher.launch(permission)
-    }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (!isGranted) {
-                Toast.makeText(this, "Permission denied. Cannot access images.", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-
-    fun isValidEmail(email: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
-        return email.matches(emailRegex)
     }
 
 }

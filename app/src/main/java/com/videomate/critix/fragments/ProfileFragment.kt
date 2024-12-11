@@ -17,7 +17,6 @@ import com.squareup.picasso.Picasso
 import com.videomate.critix.R
 import com.videomate.critix.activity.EditProfileActivity
 import com.videomate.critix.activity.ReviewActivity
-import com.videomate.critix.activity.UserActivity
 import com.videomate.critix.adapter.UserPostsAdapter
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.FragmentProfileBinding
@@ -93,7 +92,7 @@ class ProfileFragment : Fragment() {
     private fun fetchUserData(userId: String, token: String) {
         observeUserData()
         userViewModel.fetchUserData(userId, token)
-        userViewModel.fetchUserPosts(token, ReviewRequestData2(userId, 1, 10))
+        userViewModel.fetchUserPosts(token, ReviewRequestData2(userId, 1, 20))
     }
 
 

@@ -14,7 +14,6 @@ import com.videomate.critix.adapter.ReviewAdapter2
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.FragmentExploreBinding
 import com.videomate.critix.model.Review2
-import com.videomate.critix.model.ReviewDetails
 import com.videomate.critix.model.ReviewRequestData
 import com.videomate.critix.repository.UserRepository
 import com.videomate.critix.utils.Constants
@@ -73,6 +72,13 @@ class ExploreFragment : Fragment() {
         binding.recyclerViewReviews.adapter = adapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (Constants.ReviewUploaded1){
+            Constants.ReviewUploaded1 = false
+            fetchReviews()
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -21,14 +21,16 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
-
-        // Add the initial fragment
+        setBottomNevigation()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, homeFragment, "HomeFragment")
                 .commit()
         }
+    }
+
+    private fun setBottomNevigation() {
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -44,12 +46,10 @@ class HomeActivity : AppCompatActivity() {
     private fun showFragment(fragment: Fragment, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
 
-        // Hide all other fragments
         supportFragmentManager.fragments.forEach { existingFragment ->
             transaction.hide(existingFragment)
         }
 
-        // Check if the fragment is already added
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             transaction.add(R.id.fragment_container, fragment, tag)
         } else {

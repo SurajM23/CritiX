@@ -16,13 +16,11 @@ import com.videomate.critix.model.ReviewResponse
 import com.videomate.critix.model.ReviewResponse2
 import com.videomate.critix.model.SingleReviewResponse
 import com.videomate.critix.model.UpdateProfileImageResponse
-import com.videomate.critix.model.UpdateProfileResponse
 import com.videomate.critix.model.UpdateUserRequest
 import com.videomate.critix.model.UpdateUserResponse
 import com.videomate.critix.model.UserResponse
 import com.videomate.critix.model.UserResponse2
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

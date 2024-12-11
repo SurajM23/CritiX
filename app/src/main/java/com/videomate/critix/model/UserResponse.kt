@@ -13,10 +13,10 @@ data class UserData(
 
 data class UserDetails(
     val _id: String,
-    val username: String,
-    val email: String,
-    val description: String,
-    val profileImageUrl: String,
+    val username: String= "",
+    val email: String = "",
+    val description: String = "",
+    val profileImageUrl: String = "",
     val myConnections: List<String>,
     val connectedTo: List<String>,
     val date: String,

@@ -3,7 +3,6 @@ package com.videomate.critix.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,17 +25,16 @@ class RegisterActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Initialize ApiService and UserRepository
-        val apiService = ApiServiceBuilder.createApiService()
-        val userRepository = UserRepository(apiService)
-
-        // Use ViewModelFactory to initialize the ViewModel
-        val factory = UserViewModelFactory(userRepository)
-        userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
-
+        initView()
         setOnClick()
         observeViewModel()
+    }
+
+    private fun initView() {
+        val apiService = ApiServiceBuilder.createApiService()
+        val userRepository = UserRepository(apiService)
+        val factory = UserViewModelFactory(userRepository)
+        userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
     }
 
     private fun setOnClick() {
@@ -45,8 +43,6 @@ class RegisterActivity : AppCompatActivity() {
                 val username = binding.username.text.toString().trim()
                 val email = binding.email.text.toString().trim()
                 val password = binding.password.text.toString().trim()
-
-                // Call the ViewModel to perform the registration
                 val request = RegisterRequest(username, email, password)
                 userViewModel.registerUser(request)
             }
@@ -59,7 +55,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        // Observe the registration response from ViewModel
         userViewModel.registerResponse.observe(this) { response ->
             if (response.isSuccessful) {
                 response.body()?.let {

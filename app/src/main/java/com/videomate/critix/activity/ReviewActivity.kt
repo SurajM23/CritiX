@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.squareup.picasso.Picasso
 import com.videomate.critix.R
 import com.videomate.critix.apiService.ApiServiceBuilder
@@ -38,7 +36,7 @@ class ReviewActivity : AppCompatActivity() {
         initView()
         observeViewModel()
         if (reviewId.isNotEmpty()) {
-            viewModel.fetchReviewById(reviewId,userId)
+            viewModel.fetchReviewById(reviewId, userId)
         } else {
             Toast.makeText(this, "Review ID is missing", Toast.LENGTH_SHORT).show()
         }
@@ -60,8 +58,8 @@ class ReviewActivity : AppCompatActivity() {
             if (response != null) {
                 if (response.isSuccessful) {
                     val review = response.body()?.data
-                    Log.e("reviewNameUser","name ${Constants.REVIEW_ID}")
-                    Log.e("reviewNameUser","name ${review?.author}")
+                    Log.e("reviewNameUser", "name ${Constants.REVIEW_ID}")
+                    Log.e("reviewNameUser", "name ${review?.author}")
                     if (review != null) {
                         displayReviewDetails(review)
                     } else {
@@ -81,7 +79,7 @@ class ReviewActivity : AppCompatActivity() {
                     totalLikes = data.totalLikes
 
                     // Update the UI
-                    binding.tvLikeCount.text = totalLikes.toString()
+                    binding.tvLikeCount.text = "$totalLikes"
                     binding.ivLikeIcon.setImageResource(
                         if (isLiked) R.drawable.ic_like_on else R.drawable.ic_like_off
                     )
@@ -99,7 +97,7 @@ class ReviewActivity : AppCompatActivity() {
             val rating = review.rating.coerceIn(0, 5) // Ensure the rating is between 0 and 5
             val ratingStars = "★".repeat(rating) + "☆".repeat(5 - rating)
             tvRating.text = ratingStars
-            tvLikeCount.text = review.likes.size.toString()
+            review.likes.size.toString().also { tvLikeCount.text = it }
             tvName.text = review.author.username
             tvTags.text = review.tags.joinToString(", ") { "#$it" }
             isLiked = review.isLiked
@@ -113,13 +111,14 @@ class ReviewActivity : AppCompatActivity() {
                     .placeholder(R.drawable.ic_account)
                     .error(R.drawable.ic_account)
                     .into(binding.profileImage)
-            }else binding.profileImage.setImageResource(R.drawable.ic_account)
+            } else binding.profileImage.setImageResource(R.drawable.ic_account)
 
 
             binding.llUser.setOnClickListener {
                 val intent = Intent(
                     this@ReviewActivity,
-                    UserActivity::class.java)
+                    UserActivity::class.java
+                )
                 startActivity(intent)
             }
         }

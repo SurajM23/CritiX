@@ -13,6 +13,7 @@ import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.FragmentUploadBinding
 import com.videomate.critix.model.ReviewRequest
 import com.videomate.critix.repository.UserRepository
+import com.videomate.critix.utils.Constants
 import com.videomate.critix.utils.SharedPrefManager
 import com.videomate.critix.viewModel.UserViewModel
 import com.videomate.critix.viewModel.UserViewModelFactory
@@ -69,7 +70,7 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
                         ReviewRequest(
                             binding.movieTitleEditText.text.toString(),
                             binding.reviewTextEditText.text.toString(),
-                            3,
+                            binding.ratingSeekBar.rating.toInt(), // Use actual rating value
                             globalTagsList
                         )
                     )
@@ -92,6 +93,7 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         userViewModel.reviewResponse.observe(viewLifecycleOwner) { response ->
             Log.e("uploadingreview","respnse ${response.raw()}")
             if (response.code() == 200) {
+                Constants.ReviewUploaded1 = true
                 binding.movieTitleEditText.setText("")
                 binding.tagsEditText.text = ""
                 binding.ratingTextView.text = ""

@@ -54,9 +54,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+
 
     implementation(libs.ssp.android)
     implementation(libs.picasso)
@@ -69,8 +67,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.work.runtime.ktx)
-}
-
-kapt {
-    correctErrorTypes = true // Ensures annotation processors handle errors properly
 }

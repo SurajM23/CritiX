@@ -57,7 +57,7 @@ class UserActivity : AppCompatActivity() {
         val userId = Constants.USER_ID
         val token = SharedPrefManager.getToken(this)
 
-        if (!userId.isNullOrEmpty() && !token.isNullOrEmpty()) {
+        if (userId.isNotEmpty() && !token.isNullOrEmpty()) {
             fetchUserData(userId, token)
         }
     }
@@ -134,9 +134,9 @@ class UserActivity : AppCompatActivity() {
     private fun updateUserUI(userDetails: UserDetails) {
         binding.usernameTextView.text = userDetails.username
         binding.bioTextView.text = userDetails.description
-        binding.myConnectionsCount.text = userDetails.myConnections.size.toString()
-        binding.connectedToCount.text = userDetails.connectedTo.size.toString()
-        binding.reviewCount.text = userDetails.reviews.size.toString()
+        userDetails.myConnections.size.toString().also { binding.myConnectionsCount.text = it }
+        userDetails.connectedTo.size.toString().also { binding.connectedToCount.text = it }
+        userDetails.reviews.size.toString().also { binding.reviewCount.text = it }
 
         if (userDetails.profileImageUrl.isNotEmpty()) {
             Picasso.get()
@@ -144,7 +144,7 @@ class UserActivity : AppCompatActivity() {
                 .placeholder(R.drawable.ic_account)
                 .error(R.drawable.ic_account)
                 .into(binding.profileImage)
-        }else binding.profileImage.setImageResource(R.drawable.ic_account)
+        } else binding.profileImage.setImageResource(R.drawable.ic_account)
 
     }
 
@@ -152,14 +152,21 @@ class UserActivity : AppCompatActivity() {
         val userId = SharedPrefManager.getUserId(this)
         if (userDetails.myConnections.contains(userId)) {
             updateConnectButton(true)
-        }else{
+        } else {
             updateConnectButton(false)
         }
     }
 
     private fun updateUserPosts(posts: List<Post>) {
         userPosts.clear()
-        userPosts.addAll(posts.map { UserPost(title = it.movieTitle, review = it.reviewText, reviewId = it._id, userId = it.author._id) })
+        userPosts.addAll(posts.map {
+            UserPost(
+                title = it.movieTitle,
+                review = it.reviewText,
+                reviewId = it._id,
+                userId = it.author._id
+            )
+        })
         userPostsAdapter.notifyDataSetChanged()
     }
 
@@ -167,7 +174,7 @@ class UserActivity : AppCompatActivity() {
         val connectingId = Constants.USER_ID
         val token = SharedPrefManager.getToken(this)
 
-        if (!connectingId.isNullOrEmpty() && !token.isNullOrEmpty()) {
+        if (connectingId.isNotEmpty() && !token.isNullOrEmpty()) {
             makeToggleApiCall(connectingId, token)
         }
     }
