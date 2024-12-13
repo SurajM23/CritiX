@@ -102,10 +102,10 @@ class UserViewModel(
 
     private val _usersResponse = MutableLiveData<Response<UserResponse2>>()
     val usersResponse: LiveData<Response<UserResponse2>> get() = _usersResponse
-    fun fetchUsers() {
+    fun fetchUsers(token: String) {
         viewModelScope.launch {
             try {
-                val response = repository.getAllUsers()
+                val response = repository.getAllUsers(token)
                 _usersResponse.postValue(response)
             } catch (e: Exception) {
                 Log.e("FetchUsers", "Error: ${e.message}")

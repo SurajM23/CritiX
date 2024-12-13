@@ -35,7 +35,6 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         initFields()
         initViewModel()
         setupObservers()
@@ -130,6 +129,8 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun updateUserUI(userDetails: UserDetails) {
+        if (userDetails.username == SharedPrefManager.getUsername(this@UserActivity)) binding.connectButton.visibility = View.GONE
+        else  binding.connectButton.visibility = View.VISIBLE
         binding.usernameTextView.text = userDetails.username
         binding.bioTextView.text = userDetails.description
         userDetails.myConnections.size.toString().also { binding.myConnectionsCount.text = it }

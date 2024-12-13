@@ -71,7 +71,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                 response.body()?.let { userResponse ->
                     if (userResponse.data.user.connectedTo.isEmpty()) {
                         safeApiCall {
-                            userViewModel.fetchUsers()
+                            userViewModel.fetchUsers(token)
                         }
                         binding.rvUsers.visibility = View.VISIBLE
                         binding.rvFeed.visibility = View.GONE

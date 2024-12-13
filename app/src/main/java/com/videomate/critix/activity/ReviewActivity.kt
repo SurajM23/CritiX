@@ -155,8 +155,9 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     private fun updateEditVisibility(username: String) {
-        binding.txtEdit.visibility =
-            if (username == SharedPrefManager.getUsername(this)) View.VISIBLE else View.GONE
+            val isCurrentUser = username == SharedPrefManager.getUsername(this)
+            binding.txtEdit.visibility = if (isCurrentUser) View.VISIBLE else View.GONE
+            binding.imgDelete.visibility = if (isCurrentUser) View.VISIBLE else View.GONE
     }
 
     private fun handleLikeAction() {

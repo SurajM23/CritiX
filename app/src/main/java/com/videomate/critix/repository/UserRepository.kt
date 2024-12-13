@@ -54,8 +54,8 @@ class UserRepository(private val apiService: ApiService) {
         return apiService.getUserPosts("Bearer $token", request)
     }
 
-    suspend fun getAllUsers(): Response<UserResponse2> {
-        return apiService.getAllUsers()
+    suspend fun getAllUsers(token: String): Response<UserResponse2> {
+        return apiService.getAllUsers("Bearer $token")
     }
 
 
