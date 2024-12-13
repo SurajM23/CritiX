@@ -6,10 +6,6 @@
     android:background="@color/cream"
     android:orientation="vertical">
 
-    <!-- User Profile (Outside CardView) -->
-
-
-    <!-- CardView for Movie Details -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,21 +18,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/maroon">
 
             <!-- Movie Title -->
             <TextView
                 android:id="@+id/tvMovieTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:background="@color/maroon"
                 android:gravity="center"
                 android:padding="8dp"
+                android:layout_weight="1"
                 android:text="Movie Title"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
-
-            <!-- Cream Background for Rating and Review -->
+            <ImageButton
+                android:id="@+id/txtEdit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:contentDescription="Share"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_edit" />
+            <ImageButton
+                android:id="@+id/imgDelete"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:contentDescription="Share"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_delete" />
+        </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,7 +171,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Share Button with Profile Image and Share Icon -->
                 <ImageButton
                     android:id="@+id/tvShare"
                     android:layout_width="match_parent"

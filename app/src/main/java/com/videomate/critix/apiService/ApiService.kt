@@ -23,6 +23,7 @@ import com.videomate.critix.model.UserResponse2
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -107,6 +108,19 @@ interface ApiService {
         @Header("Authorization") token: String,          // Token for authentication
         @Part profileImage: MultipartBody.Part          // Profile image file as part
     ): Response<UpdateProfileImageResponse>
+
+    @PUT("review/update/{id}")
+    suspend fun updateReview(
+        @Header("Authorization") token: String,
+        @Path("id") reviewId: String,
+        @Body reviewRequest: ReviewRequest
+    ): Response<ReviewResponse>
+
+    @DELETE("review/delete/{id}")
+    suspend fun deleteReview(
+        @Header("Authorization") token: String,
+        @Path("id") reviewId: String
+    ): Response<ApiResponse>
 
 
 }

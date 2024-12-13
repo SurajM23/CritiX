@@ -40,7 +40,10 @@ class UserRepository(private val apiService: ApiService) {
         return apiService.getUserData(userId, "Bearer $token")
     }
 
-    suspend fun createReview(token: String, reviewRequest: ReviewRequest): Response<ReviewResponse> {
+    suspend fun createReview(
+        token: String,
+        reviewRequest: ReviewRequest
+    ): Response<ReviewResponse> {
         return apiService.createReview("Bearer $token", reviewRequest)
     }
 
@@ -49,44 +52,73 @@ class UserRepository(private val apiService: ApiService) {
     }
 
 
-    suspend fun getUserPosts(token: String,request: ReviewRequestData2): Response<ApiResponse> {
-        return apiService.getUserPosts("Bearer $token",request)
+    suspend fun getUserPosts(token: String, request: ReviewRequestData2): Response<ApiResponse> {
+        return apiService.getUserPosts("Bearer $token", request)
     }
 
     suspend fun getAllUsers(): Response<UserResponse2> {
         return apiService.getAllUsers()
     }
 
-    suspend fun connectUser(token: String, request: ConnectRequestData): Response<ConnectionResponse> {
+    suspend fun connectUser(
+        token: String,
+        request: ConnectRequestData
+    ): Response<ConnectionResponse> {
         return apiService.connectUser("Bearer $token", request)
     }
 
-    suspend fun toggleConnection(token: String, request: ConnectRequestData): Response<ConnectionResponse> {
+    suspend fun toggleConnection(
+        token: String,
+        request: ConnectRequestData
+    ): Response<ConnectionResponse> {
         return apiService.toggleConnection("Bearer $token", request)
     }
 
-    suspend fun getUserFeed(token: String, userId: String, page: Int, limit: Int): Response<ReviewResponse2> {
-       return apiService.getUserFeed("Bearer $token", userId, page, limit)
+    suspend fun getUserFeed(
+        token: String,
+        userId: String,
+        page: Int,
+        limit: Int
+    ): Response<ReviewResponse2> {
+        return apiService.getUserFeed("Bearer $token", userId, page, limit)
     }
 
     suspend fun getReviewById(reviewId: String, userId: String): Response<SingleReviewResponse> {
-      return apiService.getReviewById(reviewId, userId)
+        return apiService.getReviewById(reviewId, userId)
     }
 
     suspend fun likeReview(likeReviewRequest: LikeReviewRequest): Response<LikeReviewResponse> {
         return apiService.likeReview(likeReviewRequest)
     }
 
-    suspend fun updateUserDetails(token: String,updateUserRequest: UpdateUserRequest): Response<UpdateUserResponse> {
-        return apiService.updateUserDetails("Bearer $token",updateUserRequest)
+    suspend fun updateUserDetails(
+        token: String,
+        updateUserRequest: UpdateUserRequest
+    ): Response<UpdateUserResponse> {
+        return apiService.updateUserDetails("Bearer $token", updateUserRequest)
     }
 
 
-    suspend fun updateProfileImage(token: String, imageFile: File): Response<UpdateProfileImageResponse> {
+    suspend fun updateProfileImage(
+        token: String,
+        imageFile: File
+    ): Response<UpdateProfileImageResponse> {
         val requestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-        val multipartBody = MultipartBody.Part.createFormData("profileImage", imageFile.name, requestBody)
+        val multipartBody =
+            MultipartBody.Part.createFormData("profileImage", imageFile.name, requestBody)
         return apiService.updateProfileImage("Bearer $token", multipartBody)
     }
 
+    suspend fun updateReview(
+        token: String,
+        reviewId: String,
+        reviewRequest: ReviewRequest
+    ): Response<ReviewResponse> {
+        return apiService.updateReview("Bearer $token", reviewId, reviewRequest)
+    }
+
+    suspend fun deleteReview(token: String, reviewId: String): Response<ApiResponse> {
+        return apiService.deleteReview("Bearer $token", reviewId)
+    }
 
 }

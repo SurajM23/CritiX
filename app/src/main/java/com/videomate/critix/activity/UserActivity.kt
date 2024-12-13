@@ -16,11 +16,7 @@ import com.videomate.critix.R
 import com.videomate.critix.adapter.UserPostsAdapter
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.ActivityUserBinding
-import com.videomate.critix.model.ConnectRequestData
-import com.videomate.critix.model.Post
-import com.videomate.critix.model.ReviewRequestData2
-import com.videomate.critix.model.UserDetails
-import com.videomate.critix.model.UserPost
+import com.videomate.critix.model.*
 import com.videomate.critix.repository.UserRepository
 import com.videomate.critix.utils.Constants
 import com.videomate.critix.utils.SharedPrefManager
@@ -33,17 +29,24 @@ class UserActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var userPostsAdapter: UserPostsAdapter
     private val userPosts = mutableListOf<UserPost>()
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initFields()
         initViewModel()
+        setupObservers()
+        fetchUserData()
         setupRecyclerView(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
         setTabSelected(binding.staggeredViewButton)
-        loadUserData()
         setOnClickListeners()
+    }
+
+    private fun initFields() {
+        token = SharedPrefManager.getToken(this)
     }
 
     private fun initViewModel() {
@@ -53,12 +56,29 @@ class UserActivity : AppCompatActivity() {
         userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
     }
 
-    private fun loadUserData() {
-        val userId = Constants.USER_ID
-        val token = SharedPrefManager.getToken(this)
+    private fun setupObservers() {
+        observeUserData()
+        observeUserPosts()
+    }
 
-        if (userId.isNotEmpty() && !token.isNullOrEmpty()) {
-            fetchUserData(userId, token)
+    private fun observeUserData() {
+        userViewModel.userData.observe(this) { response ->
+            if (response.isSuccessful) {
+                response.body()?.data?.user?.let {
+                    updateUserUI(it)
+                    updateConnectionStatus(it)
+                }
+            }
+        }
+    }
+
+    private fun observeUserPosts() {
+        userViewModel.userPostsResponse.observe(this) { response ->
+            if (response.isSuccessful) {
+                response.body()?.data?.posts?.let {
+                    updateUserPosts(it)
+                }
+            }
         }
     }
 
@@ -70,15 +90,26 @@ class UserActivity : AppCompatActivity() {
                 binding.staggeredViewButton
             )
         }
+
         binding.staggeredViewButton.setOnClickListener {
             switchTab(
-                StaggeredGridLayoutManager(
-                    2,
-                    StaggeredGridLayoutManager.VERTICAL
-                ), binding.staggeredViewButton, binding.linearViewButton
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL),
+                binding.staggeredViewButton,
+                binding.linearViewButton
             )
         }
+
         binding.connectButton.setOnClickListener { handleToggleConnectionClick() }
+    }
+
+    private fun setupRecyclerView(layoutManager: RecyclerView.LayoutManager) {
+        userPostsAdapter = UserPostsAdapter(userPosts) { user ->
+            navigateToReviewActivity(user)
+        }
+        binding.userPostsRecyclerView.apply {
+            this.layoutManager = layoutManager
+            adapter = userPostsAdapter
+        }
     }
 
     private fun switchTab(
@@ -91,43 +122,10 @@ class UserActivity : AppCompatActivity() {
         setTabUnselected(unselectedButton)
     }
 
-    private fun setupRecyclerView(layoutManager: RecyclerView.LayoutManager) {
-        userPostsAdapter = UserPostsAdapter(userPosts)
-        { user ->
-            val intent = Intent(this@UserActivity, ReviewActivity::class.java)
-            Constants.REVIEW_ID = user.reviewId
-            Constants.USER_ID = user.userId
-            startActivity(intent)
-        }
-        binding.userPostsRecyclerView.apply {
-            this.layoutManager = layoutManager
-            adapter = userPostsAdapter
-        }
-    }
-
-    private fun fetchUserData(userId: String, token: String) {
-        observeUserData()
-        userViewModel.fetchUserData(userId, token)
-        userViewModel.fetchUserPosts(token, ReviewRequestData2(userId, 1, 10))
-    }
-
-    private fun observeUserData() {
-        userViewModel.userData.observe(this) { response ->
-            if (response.isSuccessful) {
-                response.body()?.let { userResponse ->
-                    val userDetails = userResponse.data.user
-                    updateUserUI(userDetails)
-                    updateConnectionStatus(userDetails)
-                }
-            }
-        }
-
-        userViewModel.userPostsResponse.observe(this) { response ->
-            if (response.isSuccessful) {
-                response.body()?.let { apiResponse ->
-                    updateUserPosts(apiResponse.data.posts)
-                }
-            }
+    private fun fetchUserData() {
+        token?.let {
+            userViewModel.fetchUserData(Constants.USER_ID, it)
+            userViewModel.fetchUserPosts(it, ReviewRequestData2(Constants.USER_ID, 1, 10))
         }
     }
 
@@ -144,17 +142,14 @@ class UserActivity : AppCompatActivity() {
                 .placeholder(R.drawable.ic_account)
                 .error(R.drawable.ic_account)
                 .into(binding.profileImage)
-        } else binding.profileImage.setImageResource(R.drawable.ic_account)
-
+        } else {
+            binding.profileImage.setImageResource(R.drawable.ic_account)
+        }
     }
 
     private fun updateConnectionStatus(userDetails: UserDetails) {
         val userId = SharedPrefManager.getUserId(this)
-        if (userDetails.myConnections.contains(userId)) {
-            updateConnectButton(true)
-        } else {
-            updateConnectButton(false)
-        }
+        updateConnectButton(userDetails.myConnections.contains(userId))
     }
 
     private fun updateUserPosts(posts: List<Post>) {
@@ -171,34 +166,27 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun handleToggleConnectionClick() {
-        val connectingId = Constants.USER_ID
-        val token = SharedPrefManager.getToken(this)
-
-        if (connectingId.isNotEmpty() && !token.isNullOrEmpty()) {
-            makeToggleApiCall(connectingId, token)
-        }
-    }
-
-    private fun makeToggleApiCall(connectingId: String, token: String) {
-        val connectRequest = ConnectRequestData(connectingId)
-        userViewModel.toggleConnection(token, connectRequest)
+        val connectRequest = ConnectRequestData(Constants.USER_ID)
+        token?.let { userViewModel.toggleConnection(it, connectRequest) }
 
         userViewModel.toggleConnectionResponse.observe(this) { response ->
             response?.let {
-                showToast("connection ${it.data.connected}")
+                showToast("Connection ${if (it.data.connected) "established" else "removed"}")
                 updateConnectButton(it.data.connected)
             }
         }
     }
 
     private fun updateConnectButton(isConnected: Boolean) {
-        binding.connectButton.apply {
-            text = if (isConnected) "Disconnect" else "Connect"
-        }
+        binding.connectButton.text = if (isConnected) "Disconnect" else "Connect"
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun navigateToReviewActivity(user: UserPost) {
+        val intent = Intent(this, ReviewActivity::class.java).apply {
+            Constants.REVIEW_ID = user.reviewId
+            Constants.USER_ID = user.userId
+        }
+        startActivity(intent)
     }
 
     private fun setTabSelected(button: View) {
@@ -215,5 +203,9 @@ class UserActivity : AppCompatActivity() {
         if (button is TextView) {
             button.setTextColor(ContextCompat.getColor(this, R.color.maroon))
         }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

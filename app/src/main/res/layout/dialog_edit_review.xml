@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/input_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/editReviewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Edit Review"
+        android:padding="@dimen/_8ssp"
+        android:background="@color/maroon"
+        android:textColor="@color/cream"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/movieTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8ssp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_bg"
+        android:hint="Movie Title"
+        android:inputType="text"
+        android:padding="16dp"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <!-- Review Text Field -->
+    <EditText
+        android:id="@+id/reviewTextEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8ssp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_bg"
+        android:gravity="top"
+        android:hint="Write your review"
+        android:inputType="textMultiLine"
+        android:maxHeight="200dp"
+        android:minHeight="100dp"
+        android:padding="16dp"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <RatingBar
+        android:id="@+id/ratingSeekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_8ssp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@android:color/white"
+        android:numStars="5"
+        android:progressTint="@color/maroon"
+        android:rating="1"
+        android:secondaryProgressTint="@android:color/darker_gray"
+        android:stepSize="1" />
+
+    <TextView
+        android:id="@+id/ratingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="Rating (1 to 5)"
+        android:textColor="@color/maroon"
+        android:textSize="16sp" />
+
+    <!-- Tags Field -->
+    <TextView
+        android:id="@+id/tagsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8ssp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="Tags"
+        android:padding="16dp"
+        android:textColor="@color/maroon"
+        android:textColorHint="@color/maroon" />
+
+    <Button
+        android:id="@+id/uploadReviewButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8ssp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/maroon"
+        android:padding="16dp"
+        android:text="Upload Review"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+</LinearLayout>

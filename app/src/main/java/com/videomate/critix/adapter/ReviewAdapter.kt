@@ -11,7 +11,8 @@ import com.videomate.critix.utils.Constants
 
 class ReviewsAdapter(
     private val onReviewClick: (String) -> Unit,
-    private val onAuthorClick: (String) -> Unit
+    private val onAuthorClick: (String) -> Unit,
+    private val onShareClick: (Review2) -> Unit,
 ) :
     RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
 
@@ -21,7 +22,7 @@ class ReviewsAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(review: Review2) {
             with(binding) {
-                tvMovieTitle.text = review.movieTitle
+                tvMovieTitle.text = review.movieTitle.replace("\n", " ").trim()
                 tvReviewText.text = review.reviewText
                 tvName.text = review.author.username
                 val rating = review.rating.coerceIn(0, 5) // Ensure rating is between 0 and 5
@@ -44,6 +45,10 @@ class ReviewsAdapter(
                 llUser.setOnClickListener {
                     Constants.USER_ID = review.author._id
                     onAuthorClick(Constants.USER_ID)
+                }
+
+                tvShare.setOnClickListener {
+                    onShareClick(review)
                 }
             }
         }

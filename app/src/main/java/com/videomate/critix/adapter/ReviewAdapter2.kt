@@ -31,7 +31,7 @@ class ReviewAdapter2(
 
     class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(review: Review2) {
-            binding.tvMovieTitle.text = review.movieTitle
+            binding.tvMovieTitle.text = review.movieTitle.replace("\n", " ").trim()
             binding.tvReviewText.text = review.reviewText
         }
     }

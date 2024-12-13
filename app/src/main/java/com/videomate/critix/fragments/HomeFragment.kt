@@ -18,6 +18,7 @@ import com.videomate.critix.adapter.UserAdapter
 import com.videomate.critix.apiService.ApiServiceBuilder
 import com.videomate.critix.databinding.FragmentHomeBinding
 import com.videomate.critix.model.ConnectRequestData
+import com.videomate.critix.model.Review2
 import com.videomate.critix.model.User
 import com.videomate.critix.repository.UserRepository
 import com.videomate.critix.utils.Constants
@@ -59,11 +60,10 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     }
 
     private fun getUserData() {
-            observeUserData()
-            safeApiCall {
-                userViewModel.fetchUserData(userId, token)
-            }
+        safeApiCall {
+            userViewModel.fetchUserData(userId, token)
         }
+    }
 
     private fun observeUserData() {
         userViewModel.userData.observe(viewLifecycleOwner) { response ->
@@ -124,6 +124,9 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                 )
                 Constants.USER_ID = authorId
                 startActivity(intent)
+            },
+            onShareClick = {
+                review -> onShareClicked(review)
             }
         )
 
@@ -131,6 +134,22 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = reviewsAdapter
         }
+    }
+
+    private fun onShareClicked(review: Review2) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            val shareMessage = """
+            Check out this review on Critix:
+            Movie Title: ${review.movieTitle}
+            Rating: ${review.rating}/5
+            Tags: ${review.tags.joinToString(", ") { "#$it" }}
+            
+            Review: ${review.reviewText}
+        """.trimIndent()
+            putExtra(Intent.EXTRA_TEXT, shareMessage)
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share Review via"))
     }
 
     private fun setupRecyclerViews() {
@@ -142,6 +161,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     }
 
     private fun observeUsers() {
+        observeUserData()
         userViewModel.usersResponse.observe(viewLifecycleOwner) { response ->
             if (response.isSuccessful) {
                 response.body()?.data?.let { userList ->

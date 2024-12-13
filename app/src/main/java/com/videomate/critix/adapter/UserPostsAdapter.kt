@@ -25,7 +25,7 @@ class UserPostsAdapter(
 
     override fun onBindViewHolder(holder: UserPostViewHolder, position: Int) {
         val post = posts[position]
-        holder.title.text = post.title
+        holder.title.text = post.title.replace("\n", " ").trim()
         holder.review.text = post.review
         holder.itemView.setOnClickListener{
             onReviewClick(post)

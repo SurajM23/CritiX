@@ -225,4 +225,34 @@ class UserViewModel(
             }
         }
     }
+
+    private val _updateReviewResponse = MutableLiveData<Response<ReviewResponse>>()
+    val updateReviewResponse: LiveData<Response<ReviewResponse>> get() = _updateReviewResponse
+    fun updateReview(token: String, reviewId: String, reviewRequest: ReviewRequest) {
+        viewModelScope.launch {
+            try {
+                val response = repository.updateReview(token, reviewId, reviewRequest)
+                Log.e("updateReviewApi","review ${response.raw()}")
+                _updateReviewResponse.postValue(response)
+            } catch (e: Exception) {
+                Log.e("UpdateReview", "Error: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private val _deleteReviewResponse = MutableLiveData<Response<ApiResponse>>()
+    val deleteReviewResponse: LiveData<Response<ApiResponse>> get() = _deleteReviewResponse
+
+    fun deleteReview(token: String, reviewId: String) {
+        viewModelScope.launch {
+            try {
+                val response = repository.deleteReview(token, reviewId)
+                _deleteReviewResponse.postValue(response)
+            } catch (e: Exception) {
+                Log.e("DeleteReview", "Error: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
 }

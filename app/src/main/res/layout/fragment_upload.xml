@@ -31,8 +31,9 @@
         android:textColor="@color/maroon"
         android:textColorHint="@color/maroon"
         android:background="@drawable/input_bg"
-        android:gravity="top"
         android:minHeight="100dp"
+        android:singleLine="false"
+        android:lines="4"
         android:maxHeight="200dp"
         android:padding="16dp"
         android:layout_marginTop="20dp" />

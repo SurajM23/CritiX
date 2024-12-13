@@ -50,7 +50,7 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         "Poor Acting",
         "Boring Plot",
         "Bad Cinematography"
-    ).sorted() // Sorting alphabetically
+    ).sorted()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,11 +65,12 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         binding.uploadReviewButton.setOnClickListener {
             if (binding.movieTitleEditText.text.isNotEmpty() && binding.reviewTextEditText.text.isNotEmpty()) {
                 SharedPrefManager.getToken(requireContext())?.let { it1 ->
+                    val cleanedReviewText = binding.reviewTextEditText.text.toString().replace("\n", " ").trim()
                     userViewModel.createReview(
                         it1,
                         ReviewRequest(
-                            binding.movieTitleEditText.text.toString(),
-                            binding.reviewTextEditText.text.toString(),
+                            binding.movieTitleEditText.text.toString().replace("\n", " ").trim(),
+                            binding.reviewTextEditText.text.toString().trim(),
                             binding.ratingSeekBar.rating.toInt(), // Use actual rating value
                             globalTagsList
                         )
@@ -81,11 +82,9 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         }
 
         binding.ratingSeekBar.setOnRatingBarChangeListener { _, rating, _ ->
-            // Handle rating changes
             Toast.makeText(requireContext(), "Selected Rating: $rating", Toast.LENGTH_SHORT).show()
             "$rating stars".also { binding.ratingTextView.text = it }
         }
-
 
     }
 
