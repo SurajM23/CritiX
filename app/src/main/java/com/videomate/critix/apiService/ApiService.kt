@@ -66,12 +66,6 @@ interface ApiService {
     @GET("users/user_list")
     suspend fun getAllUsers(): Response<UserResponse2>
 
-    @POST("users/connect")
-    suspend fun connectUser(
-        @Header("Authorization") token: String, // Include token in header
-        @Body request: ConnectRequestData      // Request body
-    ): Response<ConnectionResponse>
-
     @POST("users/toggleConnection")
     suspend fun toggleConnection(
         @Header("Authorization") token: String, // Include token in header
