@@ -65,7 +65,6 @@ class UploadFragment : Fragment(R.layout.fragment_upload) {
         binding.uploadReviewButton.setOnClickListener {
             if (binding.movieTitleEditText.text.isNotEmpty() && binding.reviewTextEditText.text.isNotEmpty()) {
                 SharedPrefManager.getToken(requireContext())?.let { it1 ->
-                    val cleanedReviewText = binding.reviewTextEditText.text.toString().replace("\n", " ").trim()
                     userViewModel.createReview(
                         it1,
                         ReviewRequest(

@@ -227,7 +227,6 @@ class UserViewModel(
     }
 
     private val _updateReviewResponse = MutableLiveData<Response<ReviewResponse>>()
-    val updateReviewResponse: LiveData<Response<ReviewResponse>> get() = _updateReviewResponse
     fun updateReview(token: String, reviewId: String, reviewRequest: ReviewRequest) {
         viewModelScope.launch {
             try {
