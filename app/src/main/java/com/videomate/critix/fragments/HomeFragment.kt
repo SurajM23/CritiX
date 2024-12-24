@@ -75,6 +75,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
                         }
                         binding.rvUsers.visibility = View.VISIBLE
                         binding.rvFeed.visibility = View.GONE
+
                     } else {
                         binding.rvUsers.visibility = View.GONE
                         binding.rvFeed.visibility = View.VISIBLE
@@ -225,6 +226,7 @@ class HomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     override fun onResume() {
         super.onResume()
         getUserData()
+        userAdapter.notifyDataSetChanged()
     }
 
     override fun onButtonClick(user: User) {

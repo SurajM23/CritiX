@@ -8,7 +8,7 @@ import com.videomate.critix.model.Review2
 import com.videomate.critix.utils.Constants
 
 class ReviewAdapter2(
-    private val reviews: List<Review2>,
+    private val reviews: MutableList<Review2>,
     private val onReviewClick: (String) -> Unit // Callback for click events
 ) : RecyclerView.Adapter<ReviewAdapter2.ReviewViewHolder>() {
 

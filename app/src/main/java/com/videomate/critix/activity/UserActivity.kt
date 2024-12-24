@@ -129,15 +129,21 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun updateUserUI(userDetails: UserDetails) {
-        if (userDetails.username == SharedPrefManager.getUsername(this@UserActivity)) binding.connectButton.visibility = View.GONE
-        else  binding.connectButton.visibility = View.VISIBLE
-        binding.usernameTextView.text = userDetails.username
-        binding.bioTextView.text = userDetails.description
+        // Handle null `username` or shared preference mismatch
+        if (userDetails.username.isNullOrEmpty() || userDetails.username == SharedPrefManager.getUsername(this@UserActivity)) {
+            binding.connectButton.visibility = View.GONE
+        } else {
+            binding.connectButton.visibility = View.VISIBLE
+        }
+
+        // Safely update TextViews with null checks
+        binding.usernameTextView.text = userDetails.username ?: "Unknown User"
+        binding.bioTextView.text = userDetails.description ?: "Hello there"
         userDetails.myConnections.size.toString().also { binding.myConnectionsCount.text = it }
         userDetails.connectedTo.size.toString().also { binding.connectedToCount.text = it }
         userDetails.reviews.size.toString().also { binding.reviewCount.text = it }
 
-        if (userDetails.profileImageUrl.isNotEmpty()) {
+        if (!userDetails.profileImageUrl.isNullOrEmpty()) {
             Picasso.get()
                 .load(userDetails.profileImageUrl)
                 .placeholder(R.drawable.ic_account)
@@ -147,6 +153,7 @@ class UserActivity : AppCompatActivity() {
             binding.profileImage.setImageResource(R.drawable.ic_account)
         }
     }
+
 
     private fun updateConnectionStatus(userDetails: UserDetails) {
         val userId = SharedPrefManager.getUserId(this)

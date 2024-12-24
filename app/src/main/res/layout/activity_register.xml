@@ -36,7 +36,6 @@
         android:hint="@string/username"
         android:inputType="textPersonName"
         android:padding="16dp"
-        android:text="suraj1"
         android:textColor="@color/maroon"
         android:textColorHint="@color/maroon" />
 
@@ -51,7 +50,6 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="16dp"
-        android:text="suraj1@gmail.com"
         android:textColor="@color/maroon"
         android:textColorHint="@color/maroon" />
 
@@ -66,7 +64,6 @@
         android:hint="@string/password"
         android:inputType="textPassword"
         android:padding="16dp"
-        android:text="suraj1"
         android:textColor="@color/maroon"
         android:textColorHint="@color/maroon" />
 
@@ -81,7 +78,6 @@
         android:hint="@string/confirmPassword"
         android:inputType="textPassword"
         android:padding="16dp"
-        android:text="suraj1"
         android:textColor="@color/maroon"
         android:textColorHint="@color/maroon" />
 

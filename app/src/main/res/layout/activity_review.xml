@@ -33,7 +33,6 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:layout_weight="1"
-                android:text="Movie Title"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
@@ -43,6 +42,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_weight="3"
+                android:visibility="gone"
                 android:background="@android:color/transparent"
                 android:contentDescription="Share"
                 android:scaleType="centerInside"
@@ -53,6 +53,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_weight="3"
+                android:visibility="gone"
                 android:background="@android:color/transparent"
                 android:contentDescription="Share"
                 android:scaleType="centerInside"
@@ -65,24 +66,20 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <!-- Rating -->
                 <TextView
                     android:id="@+id/tvRating"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="★★★★☆"
                     android:textColor="@color/maroon"
                     android:textSize="26sp" />
 
-                <!-- Review Text -->
                 <TextView
                     android:id="@+id/tvReviewText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="start|top"
-                    android:text="A wonderful review text goes here."
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -99,7 +96,6 @@
                     android:id="@+id/tvTags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="#SciFi #Thriller"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -138,7 +134,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
-                        android:text="John Doe"
                         android:textColor="@color/cream"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -165,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="200"
+                        android:text="0"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
